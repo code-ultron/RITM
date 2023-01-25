@@ -54,7 +54,8 @@ def evaluate_sample(image, gt_mask, predictor, max_iou_thr,
                 break
 
         return clicker.clicks_list, np.array(ious_list, dtype=np.float32), pred_probs
- 
+
+
 def evaluate_test(image, predictor
                     ):
     # clicker = Clicker(gt_mask=gt_mask)
