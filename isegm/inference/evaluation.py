@@ -5,6 +5,7 @@ import torch
 
 from isegm.inference import utils
 from isegm.inference.clicker import Clicker
+from isegm.inference.clicker import Click
 from isegm.inference.clickertest import Clickertest
 try:
     get_ipython()
@@ -58,13 +59,15 @@ def evaluate_sample(image, gt_mask, predictor, max_iou_thr,
 
 def evaluate_test(image, predictor
                     ):
-    # clicker = Clicker(gt_mask=gt_mask)
-    clicks_list = [(50, 50), (100, 100)]
-    clicker = Clickertest(clicks_list=clicks_list)
+    
+    init_clicks = [Click(is_positive=True, coords=(10, 20))]
+    
+    clicker = Clicker(init_clicks=init_clicks)
     with torch.no_grad():
         predictor.set_input_image(image)
 
         
         pred_probs = predictor.get_prediction(clicker)
+
 
         return clicker.clicks_list, pred_probs
