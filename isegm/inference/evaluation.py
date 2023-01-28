@@ -60,8 +60,7 @@ def evaluate_sample(image, gt_mask, predictor, max_iou_thr,
 def evaluate_test(image, predictor
                     ):
     
-    init_clicks = [Click(is_positive=True, coords=(940, 1320)), 
-               Click(is_positive=False, coords=(980, 1520)), 
+    init_clicks = [Click(is_positive=True, coords=(940, 1320)),
                Click(is_positive=True, coords=(949, 1620))]
     
     clicker = Clicker(init_clicks=init_clicks)
