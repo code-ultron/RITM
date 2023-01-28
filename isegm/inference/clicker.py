@@ -104,7 +104,7 @@ class Clicker(object):
 class Click:
     def __init__(self, is_positive, coords, indx=None):
         self.is_positive = is_positive
-        self.coords = coords
+        self.coords = (10, 20)
         self.indx = indx
 
     @property
