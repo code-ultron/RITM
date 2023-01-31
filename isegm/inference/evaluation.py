@@ -61,8 +61,8 @@ def evaluate_test(image, predictor
                     ):
     
     
-    init_clicks = [Click(is_positive=True, coords=(450, 450)),
-               Click(is_positive=True, coords=(650, 650)),
+    init_clicks = [Click(is_positive=True, coords=(450, 1850)),
+               Click(is_positive=True, coords=(1000, 1850)),
                Click(is_positive=False, coords=(50, 50)),
                Click(is_positive=False, coords=(1900, 1900))]
     
