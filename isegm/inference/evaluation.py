@@ -69,6 +69,7 @@ def evaluate_test(image, predictor
                Click(is_positive=True, coords=(500, 1200)),
                Click(is_positive=True, coords=(500, 2000)),
                Click(is_positive=False, coords=(50, 50)),
+               Click(is_positive=False, coords=(250, 2500)),
                Click(is_positive=False, coords=(1900, 1900))]
     
     clicker = Clicker(init_clicks=init_clicks)
