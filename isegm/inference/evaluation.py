@@ -63,6 +63,7 @@ def evaluate_test(image, predictor
     # (y,x) coordinate format
     init_clicks = [Click(is_positive=True, coords=(1850, 450)),
                Click(is_positive=True, coords=(1850, 750)),
+               Click(is_positive=True, coords=(500, 750)),
                Click(is_positive=False, coords=(50, 50)),
                Click(is_positive=False, coords=(1900, 1900))]
     
