@@ -60,8 +60,8 @@ def evaluate_sample(image, gt_mask, predictor, max_iou_thr,
 def evaluate_test(image, predictor
                     ):
     
-    init_clicks = [Click(is_positive=True, coords=(940, 1320)),
-               Click(is_positive=True, coords=(949, 1620))]
+    init_clicks = [Click(is_positive=True, coords=(250, 250)),
+               Click(is_positive=True, coords=(150, 150))]
     
     clicker = Clicker(init_clicks=init_clicks)
     with torch.no_grad():
