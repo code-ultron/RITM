@@ -57,11 +57,12 @@ def evaluate_sample(image, gt_mask, predictor, max_iou_thr,
         return clicker.clicks_list, np.array(ious_list, dtype=np.float32), pred_probs
 
 
-def evaluate_test(image, predictor
+def evaluate_test(image, predictor,img_type
                     ):
     
-    # (y,x) coordinate format
-    init_clicks = [Click(is_positive=True, coords=(1850, 200)),
+    if img_type == 1:
+        # (y,x) coordinate format
+        init_clicks = [Click(is_positive=True, coords=(1850, 200)),
                Click(is_positive=True, coords=(1850, 1000)),
                Click(is_positive=True, coords=(1250, 200)),
                Click(is_positive=True, coords=(1250, 1500)),
@@ -71,6 +72,23 @@ def evaluate_test(image, predictor
                Click(is_positive=False, coords=(50, 50)),
                Click(is_positive=False, coords=(250, 2500)),
                Click(is_positive=False, coords=(1900, 1900))]
+    
+    elif img_type == 2:
+        # (y,x) coordinate format
+        init_clicks = [Click(is_positive=True, coords=(1850, 200)),
+               Click(is_positive=True, coords=(1850, 1000)),
+               Click(is_positive=True, coords=(1250, 200)),
+               Click(is_positive=True, coords=(1250, 1500)),
+               Click(is_positive=True, coords=(500, 200)),
+               Click(is_positive=True, coords=(500, 1200)),
+               Click(is_positive=True, coords=(500, 2000)),
+            #    Click(is_positive=False, coords=(50, 50)),
+            #    Click(is_positive=False, coords=(250, 2500)),
+               Click(is_positive=False, coords=(1900, 1900))]
+        
+               
+        
+   
     
     clicker = Clicker(init_clicks=init_clicks)
     with torch.no_grad():
