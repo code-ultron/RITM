@@ -75,15 +75,19 @@ def evaluate_test(image, predictor,img_type
     
     elif img_type == 2:
         # (y,x) coordinate format
-        init_clicks = [Click(is_positive=True, coords=(1850, 200)),
+        init_clicks = [
+               Click(is_positive=True, coords=(50,1000)),
+               Click(is_positive=True, coords=(50,2500)),
+               Click(is_positive=True, coords=(1850, 200)),
                Click(is_positive=True, coords=(1850, 1000)),
                Click(is_positive=True, coords=(1250, 200)),
                Click(is_positive=True, coords=(1250, 1500)),
                Click(is_positive=True, coords=(500, 200)),
-               Click(is_positive=True, coords=(500, 1200)),
+               Click(is_positive=True, coords=(500, 1100)),
                Click(is_positive=True, coords=(500, 2000)),
-            #    Click(is_positive=False, coords=(50, 50)),
-            #    Click(is_positive=False, coords=(250, 2500)),
+               Click(is_positive=False, coords=(1750, 1500)),
+               Click(is_positive=False, coords=(1000, 2300)),
+               Click(is_positive=False, coords=(500, 2400)),
                Click(is_positive=False, coords=(1900, 1900))]
         
                
