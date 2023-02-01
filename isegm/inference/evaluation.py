@@ -84,10 +84,10 @@ def evaluate_test(image, predictor,img_type
                Click(is_positive=True, coords=(1250, 1500)),
                Click(is_positive=True, coords=(500, 200)),
                Click(is_positive=True, coords=(500, 1100)),
-               Click(is_positive=True, coords=(500, 2000)),
+               Click(is_positive=True, coords=(500, 2100)),
                Click(is_positive=False, coords=(1750, 1500)),
                Click(is_positive=False, coords=(1000, 2100)),
-               Click(is_positive=False, coords=(350, 2500)),
+               Click(is_positive=False, coords=(325, 2590)),
                Click(is_positive=False, coords=(1900, 1900))]
         
                
