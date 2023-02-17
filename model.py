@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from lib.ssn.ssn import ssn_iter, sparse_ssn_iter
+from superpixel.lib.ssn.ssn import ssn_iter, sparse_ssn_iter
 
 
 def conv_bn_relu(in_c, out_c):
