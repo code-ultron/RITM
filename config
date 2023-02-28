@@ -1,0 +1,4 @@
+Host FMPworkbench
+    HostName ec2-3-123-89-196.eu-central-1.compute.amazonaws.com
+    User camit
+    IdentityFile C:/Users/z004h82w/.ssh/id_rsa
