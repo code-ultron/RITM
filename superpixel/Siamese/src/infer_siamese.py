@@ -16,7 +16,7 @@ import time
 from multiprocessing import cpu_count
 import sys
 from typing import List, Dict, Any, Optional, Tuple, Callable
-sys.path.insert(1, '/home/janischl/deep-metric-learning-tsinghua-dogs/')
+# sys.path.insert(1, '/home/camit/')
 from ..src.models import Resnet50
 
 
@@ -186,7 +186,10 @@ def main_siamese(image_vec):
 
     # Load model's checkpoint
     #checkpoint_path: str ="./webserver/Siamese/src/checkpoints/softtriple-resnet50/2021-04-20_16-00-06_retrained_Berlin/epoch3-iter1000-map98.73.pth"
-    checkpoint_path: str ="/RITM/superpixel/Siamese/src/checkpoints/retrained_berlin_epoch5-iter2000.pth"
+    checkpoint_path: str ="/home/camit/ThesisProject/RITM/superpixel/Siamese/src/checkpoints/retrained_berlin_epoch5-iter2000.pth"
+    
+    #/home/camit/ThesisProject/RITM/superpixel/Siamese/src/checkpoints/retrained_berlin_epoch5-iter2000.pth
+    
     
     checkpoint: Dict[str, Any] = torch.load(checkpoint_path, map_location="cuda")
     logging.info(f"Loaded checkpoint at 'checkpoint_path']")
@@ -267,4 +270,3 @@ def main_siamese(image_vec):
     
    
     return retrieved_distances_vec, retrieved_image_paths_vec
-
