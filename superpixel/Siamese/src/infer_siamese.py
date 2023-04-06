@@ -119,6 +119,28 @@ def query(index: faiss.IndexFlatL2,
     image_paths: List[str] = [ref_image_paths[i] for i in indices]
     return image_paths, indices, distances
 
+def queryLeast(index: faiss.IndexFlatL2,
+          query_embedding: np.ndarray,
+          k_queries: int,
+          ref_image_paths: List[str],
+          ) -> Tuple[List[str], List[int], List[float]]:
+
+    # Searching using nearest neighbors in reference set
+    # indices: shape [N_embeddings x k_queries]
+    # distances: shape [N_embeddings x k_queries]
+    distances, indices = index.search(query_embedding, k_queries)
+    
+    # Get indices and distances sorted in ascending order
+    sorted_indices = np.argsort(distances.ravel())
+    sorted_distances = np.sort(distances.ravel())
+    
+    # Get k least similar images
+    indices = sorted_indices[:k_queries].tolist()
+    distances = sorted_distances[:k_queries].tolist()
+
+    image_paths: List[str] = [ref_image_paths[i] for i in indices]
+    return image_paths, indices, distances
+
 
 def visualize_query(query_image,
                     retrieved_image_paths: List[str],
@@ -256,6 +278,113 @@ def main_siamese(image_vec):
         start = time.time()
         embedding: np.ndarray = get_embedding(model, image, transform, device)
         retrieved_image_paths, retrieved_indices, retrieved_distances = query(
+            index, embedding, 5, ref_image_paths
+        )
+        if ref_labels:
+            retrieved_labels: List[str] = [ref_labels[i] for i in retrieved_indices]
+        end = time.time()
+        logging.info(f"Done querying 5 queries: {end - start} seconds")
+        logging.info(f"Top 5: {pformat(retrieved_image_paths)}")
+       
+        
+        retrieved_distances_vec.append(retrieved_distances)
+        retrieved_image_paths_vec.append(retrieved_image_paths)
+    
+   
+    return retrieved_distances_vec, retrieved_image_paths_vec
+
+def main_siamese_least(image_vec):
+    
+    parser = argparse.ArgumentParser(description="Visualizing embeddings with T-SNE")
+
+    parser.add_argument(
+        "-i", "--image_path",
+        type=str,
+        required=False,
+        help="Path to input image"
+    )
+   
+    # Create output directory if not exists
+    if not os.path.isdir("output/"):
+        os.makedirs("output/")
+        logging.info(f"Created output directory output")
+
+    # Initialize device
+    device: torch.device = torch.device("cuda")
+    logging.info(f"Initialized device {device}")
+
+    # Load model's checkpoint
+    #checkpoint_path: str ="./webserver/Siamese/src/checkpoints/softtriple-resnet50/2021-04-20_16-00-06_retrained_Berlin/epoch3-iter1000-map98.73.pth"
+    checkpoint_path: str ="/home/camit/ThesisProject/RITM/superpixel/Siamese/src/checkpoints/retrained_berlin_epoch5-iter2000.pth"
+    
+    #/home/camit/ThesisProject/RITM/superpixel/Siamese/src/checkpoints/retrained_berlin_epoch5-iter2000.pth
+    
+    
+    checkpoint: Dict[str, Any] = torch.load(checkpoint_path, map_location="cuda")
+    logging.info(f"Loaded checkpoint at 'checkpoint_path']")
+
+    # Load config
+    config: Dict[str, Any] = checkpoint["config"]
+    logging.info(f"Loaded config: {pformat(config)}")
+
+    # Intialize model
+    model = Resnet50(config["embedding_size"])
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model = model.to(device)
+    logging.info(f"Initialized model: {model}")
+
+    # Initialize batch size and n_workers
+    batch_size: int = config.get("batch_size", None)
+    if not batch_size:
+        batch_size = config["classes_per_batch"] * config["samples_per_class"]
+    n_cpus: int = cpu_count()
+    if n_cpus >= batch_size:
+        n_workers: int = batch_size
+    else:
+        n_workers: int = n_cpus
+    logging.info(f"Found {n_cpus} cpus. "
+                 f"Use {n_workers} threads for data loading "
+                 f"with batch_size={batch_size}")
+
+    # Initialize transform
+    transform = T.Compose([
+        T.Resize((config["image_size"], config["image_size"])),
+        T.ToTensor(),
+        T.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        ),
+    ])
+    logging.info(f"Initialized transforms: {transform}")
+
+    # Initialize reference set and reference loader
+    reference_set = Dataset(("metric/reference"), transform=transform, labeled_folders=False)
+    reference_loader = DataLoader(reference_set, batch_size=1, shuffle=False, num_workers=0)
+    logging.info(f"Initialized reference loader: {reference_loader.dataset}")
+    
+    # Calculate embeddings from images in reference set
+    start = time.time()
+    
+    ref_embeddings, ref_labels, ref_image_paths = get_embeddings_from_dataloader(
+        reference_loader, model, device
+    )
+  
+    end = time.time()
+    logging.info(f"Calculated {len(ref_embeddings)} embeddings in reference set: {end - start} second")
+
+    # Indexing database to search
+    index = faiss.IndexFlatL2(config["embedding_size"])
+    start = time.time()
+    index.add(ref_embeddings)
+    end = time.time()
+    logging.info(f"Indexed {index.ntotal} embeddings in reference set: {end - start} seconds")
+    retrieved_distances_vec = []
+    retrieved_image_paths_vec = []
+    # Retrive k least similar images in reference set
+    for image in image_vec:
+        start = time.time()
+        embedding: np.ndarray = get_embedding(model, image, transform, device)
+        retrieved_image_paths, retrieved_indices, retrieved_distances = queryLeast(
             index, embedding, 5, ref_image_paths
         )
         if ref_labels:
